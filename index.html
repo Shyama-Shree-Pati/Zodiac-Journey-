@@ -1,3 +1,7 @@
+h1, h2, #timer, button{
+    position: relative;
+    z-index: 2;
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,20 +14,57 @@ body{
     background:#0f172a;
     color:white;
     text-align:center;
+    transition: background 0.8s ease;
 }
 
 h1{
     color:gold;
 }
-
+#timer{
+    font-size:24px;
+    margin:10px;
+    color:gold;
+    font-weight:bold;
+}
 .board{
     display:grid;
     grid-template-columns:repeat(6,70px);
     gap:2px;
     justify-content:center;
     margin-top:20px;
+    position:relative;
+    z-index:7;
+}
+.stars{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:10;
+    opacity:0.8;
 }
 
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    animation: twinkle 2s infinite;
+    opacity:0.7;
+    filter: blur(0.3px);
+}
+
+@keyframes twinkle{
+    0%,100%{
+        opacity:0.2;
+    }
+
+    50%{
+        opacity:1;
+    }
+}
 .cell{
     width:70px;
     height:70px;
@@ -59,6 +100,18 @@ h1{
     animation:
     explode 1.5s ease-out forwards;
 }
+.hint{
+    outline:5px solid gold !important;
+    box-shadow:0 0 20px gold;
+}
+
+#hintBtn{
+    padding:8px 16px;
+    font-size:18px;
+    cursor:pointer;
+    border-radius:8px;
+}
+
 
 @keyframes explode{
 
@@ -78,24 +131,6 @@ h1{
         scale(0);
         opacity:0;
     }
-}
-
-.win-message{
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:
-    translate(-50%,-50%);
-    font-size:48px;
-    font-weight:bold;
-    color:gold;
-    text-shadow:
-        0 0 10px gold,
-        0 0 30px gold,
-        0 0 50px gold;
-
-    animation:
-    zoomIn 0.6s ease;
 }
 
 @keyframes zoomIn{
@@ -138,12 +173,50 @@ h1{
 }
 
 @keyframes pop{
-    0%{
-        transform:translate(-50%,-50%) scale(0);
+    0%{transform:translate(-50%,-50%) scale(0);}
+    100%{transform:translate(-50%,-50%) scale(1);}
+}
+.shooting-star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:white;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:-1;
+
+    box-shadow: 0 0 10px white, 0 0 20px cyan;
+    animation: move 1.2s linear forwards;
+}
+
+@keyframes move{
+    from{
+        transform: translate(0,0);
+        opacity: 1;
     }
 
-    100%{
-        transform:translate(-50%,-50%) scale(1);
+    to{
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+    }
+}
+
+@keyframes shoot{
+
+    from{
+        transform:
+        translate(0,0)
+        rotate(-25deg);
+
+        opacity:1;
+    }
+
+    to{
+        transform:
+        translate(-500px,500px)
+        rotate(-25deg);
+
+        opacity:0;
     }
 }
 </style>
@@ -151,9 +224,12 @@ h1{
 </head>
 
 <body>
-
+<div id="stars" class="stars"></div>
 <h1>✨ Zodiac Queens ✨</h1>
 <h2 id="levelTitle">♈ Aries</h2>
+<div id="timer">⏱ 00:00</div>
+<button id="hintBtn">💡 Hint</button>
+
 <p>Place one zodiac symbol in every row, column and region.</p>
 
 <div id="board" class="board"></div>

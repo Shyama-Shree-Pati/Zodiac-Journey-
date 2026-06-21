@@ -1,6 +1,7 @@
 const size = 6;
 let currentLevel = 0;
-
+let seconds = 0;
+let timerInterval;
 const zodiacLevels = [
 {name:"Aries",symbol:"♈",bg:"#5e1914"},
 {name:"Taurus",symbol:"♉",bg:"#264d26"},
@@ -11,7 +12,7 @@ const zodiacLevels = [
 {name:"Libra",symbol:"♎",bg:"#6e1d52"},
 {name:"Scorpio",symbol:"♏",bg:"#330000"},
 {name:"Sagittarius",symbol:"♐",bg:"#4d2c1a"},
-{name:"Capricorn",symbol:"♑",bg:"#303030"},
+{name:"Capricorn",symbol:"♑",bg:"#330101"},
 {name:"Aquarius",symbol:"♒",bg:"#003b4d"},
 {name:"Pisces",symbol:"♓",bg:"#24154d"}
 ];
@@ -45,10 +46,90 @@ const puzzles = [
 [3,3,5,5,4,4],
 [3,5,5,5,4,4],
 [3,5,5,5,4,4]
+],
+
+[
+[0,0,0,1,1,2],
+[0,3,3,1,2,2],
+[0,3,3,1,2,2],
+[4,4,3,5,5,2],
+[4,4,5,5,5,2],
+[4,4,5,5,5,2]
+],
+
+[
+[0,0,1,1,2,2],
+[0,0,1,1,2,2],
+[3,3,1,4,4,2],
+[3,3,4,4,4,5],
+[3,3,4,5,5,5],
+[3,5,5,5,5,5]
+],
+
+[
+[0,0,0,1,1,1],
+[0,2,2,2,1,1],
+[0,2,3,3,3,1],
+[4,2,3,5,3,5],
+[4,4,3,5,5,5],
+[4,4,4,5,5,5]
+],
+
+[
+[0,0,1,1,1,2],
+[0,0,1,3,2,2],
+[0,3,3,3,2,2],
+[4,4,3,5,5,2],
+[4,4,4,5,5,5],
+[4,4,4,5,5,5]
+],
+
+[
+[0,0,0,1,1,2],
+[0,3,0,1,2,2],
+[3,3,3,1,2,2],
+[4,3,5,5,5,2],
+[4,4,5,5,5,2],
+[4,4,4,5,5,5]
+],
+
+[
+[0,0,1,1,2,2],
+[0,3,1,1,2,2],
+[3,3,3,4,2,2],
+[3,5,4,4,4,2],
+[5,5,5,4,4,4],
+[5,5,5,4,4,4]
+],
+
+[
+[0,0,0,1,1,1],
+[0,2,2,1,3,1],
+[0,2,2,3,3,3],
+[4,4,2,5,3,3],
+[4,4,5,5,5,3],
+[4,4,5,5,5,5]
+],
+
+[
+[0,0,1,1,2,2],
+[0,0,1,3,2,2],
+[4,1,1,3,3,2],
+[4,4,3,3,5,5],
+[4,4,4,5,5,5],
+[4,4,4,5,5,5]
+],
+
+[
+[0,0,0,1,1,2],
+[0,3,0,1,2,2],
+[3,3,1,1,2,2],
+[3,4,4,5,5,2],
+[4,4,4,5,5,5],
+[4,4,4,5,5,5]
 ]
-
 ];
-
+console.log(puzzles.length);
 let regions = puzzles[0];
 
 const zodiacs = [
@@ -61,6 +142,89 @@ let board = Array(size)
 .map(()=>Array(size).fill(0));
 
 const gameBoard = document.getElementById("board");
+
+function startTimer(){
+
+    clearInterval(timerInterval);
+
+    seconds = 0;
+
+    timerInterval = setInterval(()=>{
+
+        seconds++;
+
+        let min =
+        String(Math.floor(seconds/60))
+        .padStart(2,"0");
+
+        let sec =
+        String(seconds%60)
+        .padStart(2,"0");
+
+        document.getElementById(
+            "timer"
+        ).innerText =
+        `⏱ ${min}:${sec}`;
+
+    },1000);
+}
+
+function stopTimer(){
+
+    clearInterval(timerInterval);
+}
+
+
+function createStars(){
+    const stars = document.getElementById("stars");
+
+    const colors = ["#ffffff", "#a5b4fc", "#fca5a5", "#fde68a"];
+
+    for(let i=0;i<150;i++){
+        const star = document.createElement("div");
+        star.className = "star";
+
+        star.style.left = Math.random()*100 + "%";
+        star.style.top = Math.random()*100 + "%";
+
+        star.style.animationDelay = Math.random()*2 + "s";
+
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        star.style.background = color;
+        star.style.boxShadow = `0 0 6px ${color}`;
+
+        stars.appendChild(star);
+    }
+}
+function createShootingStar(){
+
+    const star = document.createElement("div");
+    star.className = "shooting-star";
+    star.style.left = Math.random() * window.innerWidth + "px";
+    star.style.top = Math.random() * window.innerHeight * 0.5 + "px";
+    // random start position
+    const startX = Math.random() * window.innerWidth;
+    const startY = Math.random() * window.innerHeight * 0.5;
+    const colors = ["#ffffff","#60a5fa","#f472b6","#34d399","#fbbf24"];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    star.style.background = color;
+    star.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+    star.style.left = startX + "px";
+    star.style.top = startY + "px";
+
+    // random direction
+    const dx = (Math.random() - 0.5) * 300; // left or right spread
+    const dy = Math.random() * 400 + 200;   // always downward
+
+    star.style.setProperty("--x", dx + "px");
+    star.style.setProperty("--y", dy + "px");
+
+    document.body.appendChild(star);
+
+    setTimeout(()=> star.remove(), 1500);
+}
+
 function loadLevel(level){
 
     currentLevel = level;
@@ -68,8 +232,7 @@ function loadLevel(level){
     const zodiac =
     zodiacLevels[level];
 
-    document.body.style.background =
-    zodiac.bg;
+    document.body.style.background =`radial-gradient(circle, ${zodiac.bg}, #0f172a)`;
 
     document.getElementById(
         "levelTitle"
@@ -82,7 +245,7 @@ function loadLevel(level){
     board = Array(size)
     .fill()
     .map(() => Array(size).fill(0));
-
+    startTimer();
     drawBoard();
 }
 function drawBoard(){
@@ -98,10 +261,14 @@ function drawBoard(){
             cell.className=
             "cell region"+regions[r][c];
 
-            if(board[r][c]){
+            if(board[r][c] === 1){
 
-                cell.textContent =
-                zodiacs[regions[r][c]];
+                cell.textContent = "❌";
+            }
+
+            if(board[r][c] === 2){
+
+                cell.textContent = zodiacLevels[currentLevel].symbol;
             }
 
             cell.onclick =
@@ -117,28 +284,28 @@ function drawBoard(){
 function toggleCell(r,c){
 
     board[r][c] =
-    board[r][c] ? 0 : 1;
+    (board[r][c] + 1) % 3;
 
     drawBoard();
 
     if(checkWin()){
+        stopTimer();
+        celebrate();
 
-    celebrate();
+        setTimeout(()=>{
 
-    setTimeout(()=>{
+            currentLevel++;
 
-        currentLevel++;
+            if(currentLevel >= zodiacLevels.length){
 
-        if(currentLevel >= zodiacLevels.length){
+                alert("🏆 Zodiac Journey Complete!");
+                return;
+            }
 
-            alert("🏆 Zodiac Journey Complete!");
-            return;
-        }
+            loadLevel(currentLevel);
 
-        loadLevel(currentLevel);
-
-    },2500);
-}
+        },2500);
+    }
 }
 
 function validateBoard(){
@@ -157,9 +324,9 @@ function validateBoard(){
     for(let r=0;r<size;r++){
 
         let count =
-        board[r].reduce(
-            (a,b)=>a+b,0
-        );
+        board[r].filter(
+            cell => cell === 2
+        ).length;
 
         if(count>1)
             valid=false;
@@ -169,13 +336,33 @@ function validateBoard(){
 
         let count=0;
 
-        for(let r=0;r<size;r++)
-            count+=board[r][c];
+        for(let r=0;r<size;r++){
+            if(board[r][c] === 2)
+                count++;
+}
 
         if(count>1)
             valid=false;
     }
+    let regionCount = {};
 
+for(let r=0;r<size;r++){
+
+    for(let c=0;c<size;c++){
+
+        if(board[r][c] === 2){
+
+            let region = regions[r][c];
+
+            regionCount[region] =
+            (regionCount[region] || 0) + 1;
+
+            if(regionCount[region] > 1){
+                valid = false;
+            }
+        }
+    }
+}
     if(!validDiagonalCheck())
         valid=false;
 
@@ -197,7 +384,7 @@ function validDiagonalCheck(){
 
         for(let c=0;c<size;c++){
 
-            if(board[r][c]){
+            if(board[r][c] === 2){
 
                 const dirs=[
                     [-1,-1],
@@ -216,7 +403,7 @@ function validDiagonalCheck(){
                         nr<size &&
                         nc>=0 &&
                         nc<size &&
-                        board[nr][nc]
+                        board[nr][nc] === 2
                     ){
                         return false;
                     }
@@ -232,10 +419,10 @@ function checkWin(){
 
     for(let r=0;r<size;r++){
 
-        let count=
-        board[r].reduce(
-            (a,b)=>a+b,0
-        );
+        let count =
+        board[r].filter(
+            cell => cell === 2
+        ).length;
 
         if(count!==1)
             return false;
@@ -245,8 +432,10 @@ function checkWin(){
 
         let count=0;
 
-        for(let r=0;r<size;r++)
-            count+=board[r][c];
+        for(let r=0;r<size;r++){
+            if(board[r][c] === 2)
+                count++;
+        }
 
         if(count!==1)
             return false;
@@ -258,7 +447,7 @@ function checkWin(){
 
         for(let c=0;c<size;c++){
 
-            if(board[r][c]){
+            if(board[r][c] === 2){
 
                 let region=
                 regions[r][c];
@@ -355,7 +544,14 @@ zodiacLevels[currentLevel].name +
         msg.remove();
     },2500);
 }
+createStars();
+function shootingStarLoop() {
+    createShootingStar();
 
+    let randomTime = Math.random() * 5000 + 3000; // 3s–8s
+
+    setTimeout(shootingStarLoop, randomTime);
+}
+
+shootingStarLoop();
 loadLevel(0);
-regions = puzzles[level];
-drawBoard();
