@@ -32,10 +32,26 @@
     </div>
 
     <div class="game-wrapper">
-      <div id="board" class="board"></div>
+  <div id="board" class="board"></div>
+
+  <div class="board-buttons">
+      <button id="resetBtn">🔄 Reset</button>
       <button id="hintBtn" class="hint-btn">💡 Hint</button>
-    </div>
   </div>
+</div>
+
+<div id="scorePanel">
+  <table id="scoreTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Zodiac</th>
+        <th>Time</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="scoreBody"></tbody>
+  </table>
 </div>
 <script src="script.js"></script>
 
