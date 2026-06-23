@@ -24,17 +24,15 @@ body {
 h1 {
     color: gold;
     font-size: 48px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .game-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 150px;
-    margin-bottom: 40px;
-    font-size: 28px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:25px;
 }
 
 #levelTitle {
@@ -101,7 +99,7 @@ h1 {
 
 .hint-btn {
     position: absolute;
-    bottom: -60px;
+    bottom: 0px;
     right: 0;
     padding: 12px 30px;
     font-size: 16px;
@@ -240,10 +238,6 @@ h1 {
     z-index: 10;
 }
 
-    animation:
-    explode 1.5s ease-out forwards;
-}
-
 .hint{
     outline:5px solid gold !important;
     box-shadow:0 0 20px gold;
@@ -312,6 +306,7 @@ h1 {
     left:50%;
     transform:translate(-50%,-50%);
     font-size:48px;
+    white-space:nowrap;
     font-weight:bold;
     color:goldenrod;
     text-shadow:
@@ -380,4 +375,54 @@ h1 {
     background:gold;
     font-weight:bold;
     margin:20px;
+}
+
+#scorePanel{
+    position: fixed;
+    right: 50px;
+    top: 220px;
+}
+
+#scorePanel{
+    margin-left:50px;
+}
+
+#scoreTable{
+    border-collapse:collapse;
+    background:rgba(0,0,0,0.45);
+    backdrop-filter:blur(5px);
+    min-width:320px;
+}
+
+#scoreTable th{
+    color:gold;
+    border:1px solid gold;
+    padding:8px;
+}
+
+#scoreTable td{
+    border:1px solid #777;
+    padding:6px;
+    color:white;
+    text-align:center;
+}
+
+#scoreTable tr:hover{
+    background:rgba(255,255,255,0.08);
+}
+.board-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+}
+
+#resetBtn{
+    padding:8px 16px;
+    font-size:18px;
+    border-radius:30px;
+    cursor:pointer;
+    background:#7c2d12;
+    color:white;
+    border:none;
+    display:none;
 }

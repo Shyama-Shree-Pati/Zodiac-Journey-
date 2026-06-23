@@ -4,6 +4,9 @@ let currentLevel = 0;
 let seconds = 0;
 let timerInterval;
 let musicStarted = false;
+let levelTimes = Array(12).fill("");
+let levelScores = Array(12).fill("");
+let totalScore = 0;
 const zodiacLevels = [
 {name:"Aries",symbol:"♈",bg:"#264d26"},
 {name:"Taurus",symbol:"♉",bg:"#5e1914"},
@@ -193,7 +196,35 @@ function stopTimer(){
 
     clearInterval(timerInterval);
 }
+function calculateScore(sec){
 
+    if(sec <= 30) return 100;
+    if(sec <= 60) return 75;
+    if(sec <= 90) return 50;
+
+    return 25;
+}
+
+function buildScoreTable(){
+
+    const body =
+    document.getElementById("scoreBody");
+
+    if(!body) return;
+
+    body.innerHTML = "";
+
+    zodiacLevels.forEach((zodiac,index)=>{
+
+        body.innerHTML += `
+        <tr>
+            <td>${index+1}</td>
+            <td>${zodiac.name}</td>
+            <td>${levelTimes[index]}</td>
+            <td>${levelScores[index]}</td>
+        </tr>`;
+    });
+}
 
 function createStars(){
     const stars = document.getElementById("stars");
@@ -328,9 +359,33 @@ function toggleCell(r,c){
     drawBoard();
 
     if(checkWin()){
-        play(sfx.win);
-        stopTimer();
-        celebrate();
+
+    play(sfx.win);
+
+    stopTimer();
+
+    let mins =
+    String(Math.floor(seconds/60))
+    .padStart(2,"0");
+
+    let secs =
+    String(seconds%60)
+    .padStart(2,"0");
+
+    levelTimes[currentLevel] =
+    `${mins}:${secs}`;
+
+    let score =
+    calculateScore(seconds);
+
+    levelScores[currentLevel] =
+    score;
+
+    totalScore += score;
+
+    buildScoreTable();
+
+    celebrate();
 
         setTimeout(()=>{
 
@@ -339,13 +394,20 @@ function toggleCell(r,c){
     if(currentLevel >= zodiacLevels.length){
 
     play(sfx.finalWin);
-
+    document.querySelector("h1").style.display = "none";
+    document.getElementById("levelTitle").style.display = "none";
+    document.getElementById("timer").style.display = "none";
+    document.getElementById("board").style.display = "none";
+    document.getElementById("hintBtn").style.display = "none";
+    document.getElementById("resetBtn").style.display = "none";
     const msg = document.createElement("div");
 
     msg.className = "win-message";
 
     msg.innerHTML =
-    "🏆 Zodiac Queens Completed! 🏆";
+    `🏆 Zodiac Queens Completed! 🏆
+    <br><br>
+    ⭐ Total Score: ${totalScore}`;
 
     document.body.appendChild(msg);
 
@@ -365,7 +427,7 @@ function toggleCell(r,c){
     "fixed";
 
     restartBtn.style.top =
-    "65%";
+    "80%";
 
     restartBtn.style.left =
     "50%";
@@ -384,15 +446,25 @@ function toggleCell(r,c){
 
     restartBtn.onclick = ()=>{
 
-        clearInterval(fireworkLoop);
+    clearInterval(fireworkLoop);
 
-        msg.remove();
-        restartBtn.remove();
+    msg.remove();
+    restartBtn.remove();
 
-        currentLevel = 0;
+    levelTimes =
+    Array(12).fill("");
 
-        loadLevel(0);
-    };
+    levelScores =
+    Array(12).fill("");
+
+    totalScore = 0;
+
+    buildScoreTable();
+
+    currentLevel = 0;
+
+    loadLevel(0);
+};
 
     return;
 }
@@ -705,10 +777,20 @@ document.getElementById("startBtn").onclick = () => {
     if (gameScreen) gameScreen.classList.remove("hidden");
     
     document.getElementById("hintBtn").style.display = "inline-block";
+    document.getElementById("resetBtn").style.display = "inline-block";
     document.getElementById("timer").style.display = "block";
+    buildScoreTable();
     loadLevel(0);
 };
 
 document.addEventListener("click", () => {
     bg.play().catch(err => console.log("Audio play error:", err));
 }, { once: true });
+document.getElementById("resetBtn").onclick = ()=>{
+
+    board = Array(size)
+    .fill()
+    .map(()=>Array(size).fill(0));
+
+    drawBoard();
+};
