@@ -461,16 +461,30 @@ function toggleCell(r,c){
     nextBtn.classList.add("next-btn");
     nextBtn.innerText = "➡ Next Level";
 
+    // create an overlay that blurs and freezes the background
+    const overlay = document.createElement("div");
+    overlay.id = "freezeOverlay";
+    overlay.className = "freeze-overlay";
+
+    // append overlay then next button so the button remains on top and clickable
+    document.body.appendChild(overlay);
+    document.body.classList.add('freeze-active');
+    // ensure scoreboard is visible while on the next-level prompt
+    const scorePanel = document.getElementById('scorePanel');
+    if(scorePanel) scorePanel.style.display = 'block';
     document.body.appendChild(nextBtn);
 
+    // When next is clicked: play sound, remove overlay, unfreeze, remove button, and load next level
     nextBtn.onclick = ()=>{
+        play(sfx.nextLevel);
 
-    play(sfx.nextLevel);
+        if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        document.body.classList.remove('freeze-active');
 
-    nextBtn.remove();
+        nextBtn.remove();
 
-    loadLevel(currentLevel);
-};
+        loadLevel(currentLevel);
+    };
 
 },2500);
     }

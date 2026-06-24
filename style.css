@@ -143,7 +143,6 @@ h1 {
     transform: translateX(-50%) scale(1.05);
 }
 
-/* Restart Game button visuals and positioning (moved from inline styles) */
 .restart-btn {
     position: fixed;
     top: 80%;
@@ -481,4 +480,38 @@ h1 {
 #resetBtn:hover {
     box-shadow: 0 0 25px rgba(96, 165, 250, 0.8);
     transform: scale(1.05);
+}
+
+.freeze-overlay{
+    position:fixed;
+    inset:0;
+    background: rgba(0,0,0,0.35);
+    z-index: 900;
+    pointer-events: auto;
+}
+
+body.freeze-active .board,
+body.freeze-active .board-buttons,
+body.freeze-active #hintBtn,
+body.freeze-active #resetBtn{
+    filter: blur(6px);
+    -webkit-filter: blur(6px);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 200ms ease;
+}
+
+body.freeze-active .container > h1{
+    position: relative;
+    z-index: 1002;
+}
+
+body.freeze-active #scorePanel{
+    z-index: 1002;
+}
+
+body.freeze-active .next-btn,
+body.freeze-active .restart-btn{
+    z-index: 1003;
+    position: fixed;
 }
